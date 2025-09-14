@@ -15,7 +15,8 @@ app.use(express.json()) // Allows req.body JSON data
 
 
 
-app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/inngest", serve({ client: inngest, functions }))
+
 
 
 app.get("/", (req, res) => {
@@ -28,11 +29,11 @@ const startServer = async () => {
     await connectDB()
     if (ENV.NODE_ENV !== "production") {
       app.listen(ENV.PORT, () => {
-        console.log("Server running on PORT: " + ENV.PORT)
+        console.log("Server running on PORT: ", ENV.PORT)
       })
     }
   } catch (error) {
-    console.error("Error startig server", error)
+    console.error("Error starting server:", error)
     process.exit(1)
   }
 }
