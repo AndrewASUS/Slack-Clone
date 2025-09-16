@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/clerk-react";
 
 
 
+
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -20,3 +21,4 @@ createRoot(document.getElementById("root")).render(
     </ClerkProvider>
   </StrictMode>
 );
+
