@@ -34,7 +34,7 @@ Sentry.setupExpressErrorHandler(app)
 
 
 
-// Server configuration for vercel configuration
+// Server configuration for vercel
 const startServer = async () => {
   try {
     await connectDB()
