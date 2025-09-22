@@ -10,8 +10,9 @@ export const inngest = new Inngest({ id: "slack-clone" })
 
 
 const syncUser = inngest.createFunction(
+
   { id: "sync-user" },
-  { event: "clerk/user.created" },
+  { event: "clerk/session.created" },
   async ({ event }) => {
     await connectDB()
 
@@ -24,7 +25,7 @@ const syncUser = inngest.createFunction(
       image: image_url
     }
 
-    
+    console.log("Before stream user created")
     // Create user from Stream
     await User.create(newUser);
 
@@ -33,6 +34,7 @@ const syncUser = inngest.createFunction(
       name: newUser.name,
       image: newUser.image,
     });
+    console.log("After stream user created")
   }
 )
 
@@ -49,6 +51,14 @@ const deleteUserFromDB = inngest.createFunction(
   }
 )
 
+const logAllEvents = inngest.createFunction(
+  { id: "log-all-events" },
+  { event: "*" }, // <-- catch every event
+  async ({ event }) => {
+    console.log("Incoming event:", event.name, event.data);
+  }
+);
+
 
 // Create an empty array where we'll export future Inngest functions
-export const functions = [syncUser, deleteUserFromDB]
+export const functions = [syncUser, deleteUserFromDB, logAllEvents]
