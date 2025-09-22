@@ -11,7 +11,7 @@ export const upsertStreamUser = async (userData) => {
     console.log("Stream user upserted successfully:", userData.name)
     return userData;
   } catch (error) {
-    console.error("Error upserting Stream user:", error,);
+    console.log("Error upserting Stream user:", error)
   }
 }
 
