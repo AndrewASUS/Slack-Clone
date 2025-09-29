@@ -1,7 +1,7 @@
 import { Inngest } from "inngest"
 import { connectDB } from "./db.js"
 import { User } from "../models/User.Model.js"
-import { deleteStreamUser, upsertStreamUser } from "./stream.js"
+import { addUserToPublicChannels, deleteStreamUser, upsertStreamUser } from "./stream.js"
 
 
 
@@ -10,9 +10,8 @@ export const inngest = new Inngest({ id: "slack-clone" })
 
 
 const syncUser = inngest.createFunction(
-
   { id: "sync-user" },
-  { event: "clerk/session.created" },
+  { event: "clerk/user.created" },
   async ({ event }) => {
     await connectDB()
 
@@ -25,7 +24,6 @@ const syncUser = inngest.createFunction(
       image: image_url
     }
 
-    console.log("Before stream user created")
     // Create user from Stream
     await User.create(newUser);
 
@@ -34,7 +32,7 @@ const syncUser = inngest.createFunction(
       name: newUser.name,
       image: newUser.image,
     });
-    console.log("After stream user created")
+    await addUserToPublicChannels(newUser.clerkId.toString())
   }
 )
 

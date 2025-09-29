@@ -7,12 +7,13 @@ import { functions, inngest } from "./config/inngest.js"
 import { serve } from "inngest/express"
 import chatRoutes from "./routes/chat.route.js"
 import * as Sentry from "@sentry/node"
-
+import cors from "cors"
 
 
 const app = express()
 
-app.use(express.json()) // Allows req.body JSON data 
+app.use(express.json()) // Allows req.body JSON data
+app.use(cors({origin: "http://localhost:5173", credentials: true}))
 app.use(clerkMiddleware()) // Can't check if user is authenticated without this (req.auth)
 
 
