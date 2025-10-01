@@ -6,7 +6,7 @@ import { clerkMiddleware } from "@clerk/express"
 import { functions, inngest } from "./config/inngest.js"
 import { serve } from "inngest/express"
 import chatRoutes from "./routes/chat.route.js"
-import * as Sentry from "@sentry/node"
+// import * as Sentry from "@sentry/node"
 import cors from "cors"
 
 
@@ -17,9 +17,9 @@ app.use(cors({origin: "http://localhost:5173", credentials: true}))
 app.use(clerkMiddleware()) // Can't check if user is authenticated without this (req.auth)
 
 
-app.get("/debug-sentry", (req, res) => {
-  throw new Error("Sentry error testing!")
-})
+// app.get("/debug-sentry", (req, res) => {
+//   throw new Error("Sentry error testing!")
+// })
 
 app.get("/", (req, res) => {
   res.send("🚀 Server response")
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 app.use("/api/inngest", serve({ client: inngest, functions }))
 app.use("/api/chat", chatRoutes)
 
-Sentry.setupExpressErrorHandler(app)
+// Sentry.setupExpressErrorHandler(app)
 
 
 

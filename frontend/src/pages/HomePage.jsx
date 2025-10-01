@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useStreamChat } from "../hooks/useStreamChat";
 import PageLoader from "../components/PageLoader";
-import { HashIcon, PlusIcon, UserIcon } from "lucide-react";
+
 import {
   Chat,
   Channel,
@@ -14,132 +14,136 @@ import {
   Window,
 } from "stream-chat-react";
 
-import CustomChannelHeader from "../components/CustomChannelHeader";
-import "../styles/stream-chat-theme.css"
+import "../styles/stream-chat-theme.css";
+import { HashIcon, PlusIcon, UsersIcon } from "lucide-react";
 import CreateChannelModal from "../components/CreateChannelModal";
-import CustomerChannelPreview from "../components/CustomerChannelPreview";
+import CustomChannelPreview from "../components/CustomChannelPreview";
 import UsersList from "../components/UsersList";
-
-
-
+import CustomChannelHeader from "../components/CustomChannelHeader";
 
 const HomePage = () => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [activeChannel, setActiveChannel] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const  [ isCreatingModalOpen, setIsCreatingModalOpen ] = useState();
-  const  [ activeChannel, setActiveChannel ]  = useState();
-  const [ searchParams, setSearchParams ] = useSearchParams();
-  const { chatClient, error, isLoading } = useStreamChat()
+  const { chatClient, error, isLoading } = useStreamChat();
 
-
-  // Set actice channel from the URL params
+  // set active channel from URL params
   useEffect(() => {
     if (chatClient) {
-      const channelId = searchParams.get("channel")
-
+      const channelId = searchParams.get("channel");
       if (channelId) {
-        const channel = chatClient.channel("messaging", channelId)
-        setActiveChannel(channel)
+        const channel = chatClient.channel("messaging", channelId);
+        setActiveChannel(channel);
       }
     }
-  }, [chatClient, searchParams])
+  }, [chatClient, searchParams]);
 
 
-  if (error) return <p>Something went wrong...</p> 
-  if (isLoading || !chatClient) return <PageLoader />
+  if (error) return <p>Something went wrong...</p>;
+  if (isLoading || !chatClient) return <PageLoader />;
 
   return (
     <div className="chat-wrapper">
       <Chat client={chatClient}>
-
         <div className="chat-container">
-          {/* Left Sidebar */}
+          {/* LEFT SIDEBAR */}
           <div className="str-chat__channel-list">
             <div className="team-channel-list">
-              {/* Haeder */}
+              {/* HEADER */}
               <div className="team-channel-list__header gap-4">
                 <div className="brand-container">
-                  <img src="/slack-logo.png" alt="Logo" className="brand-logo"/>
+                  <img
+                    src="/slack-logo.png"
+                    alt="Logo"
+                    className="brand-logo"
+                  />
                   <span className="brand-name">Slack</span>
                 </div>
                 <div className="user-button-wrapper">
                   <UserButton />
                 </div>
               </div>
-
-              {/* Channels List */}
+              {/* CHANNELS LIST */}
               <div className="team-channel-list__content">
                 <div className="create-channel-section">
-                  <button onClick={() => setIsCreatingModalOpen(true)} className="create-channel-btn">
-                    <PlusIcon className="size-4"/>
+                  <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="create-channel-btn"
+                  >
+                    <PlusIcon className="size-4" />
                     <span>Create Channel</span>
                   </button>
                 </div>
-                {/* Channel List */}
 
-                <ChannelList 
-                  filters={{members:{$in: [chatClient?.user.id]}}}
-                  options={{state: true, watch: true}}
-                  Preview={({channel}) => (
-                    <CustomerChannelPreview 
+                {/* CHANNEL LIST */}
+                <ChannelList
+                  filters={{ members: { $in: [chatClient?.user?.id] } }}
+                  options={{ state: true, watch: true }}
+                  Preview={({ channel }) => (
+                    <CustomChannelPreview
                       channel={channel}
                       activeChannel={activeChannel}
-                      setActiveChannel={(channel) => setSearchParams({channel: channel.id})}
+                      setActiveChannel={(channel) =>
+                        setSearchParams({ channel: channel.id })
+                      }
                     />
                   )}
-                  List = {({children, error, loading}) => (
+                  List={({ children, loading, error }) => (
                     <div className="channel-sections">
                       <div className="section-header">
                         <div className="section-title">
-                          <HashIcon className="size-4"/>
+                          <HashIcon className="size-4" />
                           <span>Channels</span>
                         </div>
                       </div>
 
-                      {loading && <div className="loading-message">Loading Channels...</div>}
-                      {error && <div className="error-message">Error loading channels</div>}
-
-                      <div className="channels-list">
-                        {children}
-
-                        <div className="section-header direct-messages">
-                          <div className="section-title">
-                            <UserIcon className="size-4" />
-                            <span>Direct Messages</span>
-                          </div>
+                      {loading && (
+                        <div className="loading-message">
+                          Loading channels...
                         </div>
-                        <UsersList activeChannel={activeChannel}/>
-                      </div>
+                      )}
+                      {error && (
+                        <div className="error-message">
+                          Error loading channels
+                        </div>
+                      )}
 
+                      <div className="channels-list">{children}</div>
+
+                      <div className="section-header direct-messages">
+                        <div className="section-title">
+                          <UsersIcon className="size-4" />
+                          <span>Direct Messages</span>
+                        </div>
+                      </div>
+                      <UsersList activeChannel={activeChannel} />
                     </div>
                   )}
                 />
-
               </div>
             </div>
           </div>
 
-          {/* Right container */}
-            <div className="chat-main">
-              <Channel channel={activeChannel}>
-                <Window>
-                  <CustomChannelHeader />
-                  <MessageList />
-                  <MessageInput />
-                </Window>
-                <Thread />
-              </Channel>
-            </div>
+          {/* RIGHT CONTAINER */}
+          <div className="chat-main">
+            <Channel channel={activeChannel}>
+              <Window>
+                <CustomChannelHeader />
+                <MessageList />
+                <MessageInput />
+              </Window>
+
+              <Thread />
+            </Channel>
+          </div>
         </div>
 
-        {isCreatingModalOpen && (
-          <CreateChannelModal 
-            onClose={() => setIsCreatingModalOpen(false)}
-          />
+        {isCreateModalOpen && (
+          <CreateChannelModal onClose={() => setIsCreateModalOpen(false)} />
         )}
-
       </Chat>
     </div>
   );
 };
-
 export default HomePage;

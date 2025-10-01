@@ -48,15 +48,6 @@ const CreateChannelModal = ({ onClose}) => {
 
 
 
-  // useEffect(() => {
-  //   setChannelName("")
-  //   setDescription("")
-  //   setChannelType("public")
-  //   setError("")
-  //   setSelectedMembers([])
-  // }, [])
-
-
   useEffect(() => {
     if (channelType === "public") {
       setSelectedMembers(users.map((u) => u.id))
