@@ -290,7 +290,7 @@ const CreateChannelModal = ({ onClose}) => {
 
             {/* Actions */}
             <div className="create-channel-modal__actions">
-              <button type="button" onClick={onclose} className="btn btn-secondary">
+              <button type="button" onClick={onClose} className="btn btn-secondary">
                 Cancel
               </button>
               <button
