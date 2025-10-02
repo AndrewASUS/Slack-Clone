@@ -34,7 +34,10 @@ const CreateChannelModal = ({ onClose}) => {
           {name: 1}, // MongoDB 1 = ascending order OR -1 = descending order
           {limit: 100}
         )
-        setUsers(response.users || [])
+
+        const usersOnly = response.users.filter((user) => !user.id.startsWith("recording-"));
+
+        setUsers(usersOnly || [])
       } catch (error) {
         console.log("Error fetching users:", error);
         setUsers([])
