@@ -14,6 +14,8 @@ const app = express()
 
 app.use(express.json()) // Allows req.body JSON data
 app.use(cors({origin: "http://localhost:5173", credentials: true}))
+// app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+
 app.use(clerkMiddleware()) // Can't check if user is authenticated without this (req.auth)
 
 
@@ -54,3 +56,5 @@ const startServer = async () => {
 startServer()
 
 export default app
+
+
